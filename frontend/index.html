@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Akıllı Kütüphane - Ana Sayfa</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f9fafc;
+      color: #34495e;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    .main-msg {
+      margin-top: 20vh;
+      font-size: 1.35em;
+      color: #236abd;
+      text-align: center;
+    }
+    .main-links {
+      margin: 2em 0 0 0;
+      display: flex;
+      gap: 2em;
+      justify-content: center;
+    }
+    .main-links a {
+      background: #236abd;
+      color: #fff;
+      text-decoration: none;
+      font-size: 1.13em;
+      padding: 0.75em 2em;
+      border-radius: 7px;
+      transition: background 0.2s;
+    }
+    .main-links a:hover {
+      background: #17467d;
+    }
+    .info-note {
+      color: #758ca0;
+      text-align: center;
+      font-size: 1em;
+      margin-top: 2.5em;
+      max-width: 370px;
+    }
+  </style>
+</head>
+<body>
+  <div class="main-msg">
+    Akıllı Kütüphane'ye hoş geldiniz!<br>
+    Giriş yapabilir veya kitaplara göz atabilirsiniz.
+  </div>
+  <div class="main-links">
+      <a href="login.html" id="loginBtn">Giriş Yap</a>
+      <a href="books.html" id="booksBtn">Kitaplara Göz At</a>
+  </div>
+  <div class="info-note">
+    Not: Giriş yapmadan kitapları <b>inceleyebilirsiniz</b> ancak kitap ödünç alma ve iade işlemleri için giriş yapmanız gereklidir.
+  </div>
+  <script>
+    // loginBtn doğrudan login.html'e yönlendirir (varsayılan <a> davranışı yeterlidir)
+    // booksBtn ile kullanıcı direkt olarak kitaplara (books.html) bakabilir, 
+    // ancak books.html dosyasındaki backend kitap işlemleri 
+    // (ödünç al, iade et) zaten kimlik gerektiriyor.
+  </script>
+</body>
+</html>
