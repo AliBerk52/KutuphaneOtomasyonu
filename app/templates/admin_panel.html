@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Yönetim Paneli{% endblock %}
+
+{% block content %}
+<header>
+    <h1>Admin Yönetim Paneli</h1>
+    <nav>
+        <a href="/dashboard">Kütüphane Paneli</a>
+        <a href="#" onclick="logout()">Çıkış Yap</a>
+    </nav>
+</header>
+
+<div class="container">
+    <section style="margin-bottom: 50px;">
+        <h2>📋 Tüm Kullanıcı Ödünç İşlemleri</h2>
+        <p>Sistemdeki tüm aktif ve tamamlanmış ödünç alma kayıtları aşağıda listelenmektedir.</p>
+        
+        <table id="adminLoanTable" class="table">
+            <thead>
+                <tr>
+                    <th>Kullanıcı E-posta</th>
+                    <th>Kitap Adı</th>
+                    <th>Ödünç Tarihi</th>
+                    <th>Durum</th>
+                </tr>
+            </thead>
+            <tbody id="adminAllLoansTable">
+                <tr><td colspan="4" style="text-align: center;">Yükleniyor...</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <hr>
+
+    <section style="margin-top: 30px; opacity: 0.8;">
+        <h3>🛠️ API Yönetim Bilgileri</h3>
+        <ul>
+            <li>**Kategori Ekle:** POST /api/v1/admin/categories</li>
+            <li>**Yazar Ekle:** POST /api/v1/admin/authors</li>
+            <li>**Kitap Ekle:** POST /api/v1/books/</li>
+        </ul>
+        <p><small>Not: Bu işlemler için Admin Token'ı gereklidir.</small></p>
+    </section>
+</div>
+{% endblock %}
+
+{% block body_extra %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+<script>
+    // Sayfa yüklendiğinde admin verilerini getir
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof loadAllUserLoans === "function") {
+            loadAllUserLoans();
+        } else {
+            console.error("loadAllUserLoans fonksiyonu dashboard.js içinde bulunamadı!");
+        }
+    });
+
+    function logout() {
+        localStorage.clear();
+        window.location.href = '/login';
+    }
+</script>
+{% endblock %}

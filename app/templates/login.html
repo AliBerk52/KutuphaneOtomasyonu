@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Giriş Yap{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 400px;">
+    <h1>Giriş Yap</h1>
+    <form id="loginForm">
+        <label for="email">E-posta:</label>
+        <input type="email" id="email" name="email" required>
+        
+        <label for="password">Şifre:</label>
+        <input type="password" id="password" name="password" required>
+        
+        <button type="submit">Giriş Yap</button>
+        <p style="text-align: center;">Hesabınız yok mu? <a href="/register">Kayıt Ol</a></p>
+    </form>
+    <div id="message" class="message error" style="display:none;"></div>
+</div>
+{% endblock %}
+
+{% block body_extra %}
+<script src="{{ url_for('static', filename='js/login.js') }}"></script>
+{% endblock %}

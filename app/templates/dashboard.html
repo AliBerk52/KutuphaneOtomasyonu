@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Kütüphane Paneli{% endblock %}
+
+{% block content %}
+<header>
+    <h1>Kütüphane Yönetim Sistemi</h1>
+    <nav>
+        <span id="welcomeUser" style="margin-right: 15px; font-weight: normal;"></span>
+        <span id="adminLink" style="display:none;">
+            <a href="/admin-panel">Admin Paneli</a>
+        </span>
+        <a href="#" onclick="logout()">Çıkış Yap</a>
+    </nav>
+</header>
+<div class="container">
+    <h2>📚 Kitap Arama ve Ödünç Alma</h2>
+    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+        <input type="text" id="searchQuery" placeholder="Kitap Adı, Yazar veya ISBN Ara..." style="margin: 0;">
+        <button onclick="searchBooks()" style="width: 100px; margin: 0;">Ara</button>
+    </div>
+    
+    <table id="bookTable">
+        <thead>
+            <tr>
+                <th>Başlık</th>
+                <th>Yazar(lar)</th>
+                <th>Kategori</th>
+                <th>Stok</th>
+                <th>İşlem</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td colspan="5" style="text-align: center;">Kitaplar yükleniyor...</td></tr>
+        </tbody>
+    </table>
+
+    <h2 style="margin-top: 40px;">⏱️ Aktif Ödünç İşlemlerim</h2>
+    
+    <div id="activeLoansContainer">
+        <p>Aktif ödünçler yükleniyor...</p>
+    </div>
+
+</div>
+
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

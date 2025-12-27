@@ -1,4 +1,5 @@
 from flask import Blueprint, jsonify, request
+
 from ..repositories.user_repo import (
     get_all_users, get_user_by_id, create_user, update_user, delete_user
 )
@@ -115,3 +116,54 @@ def delete_user_route(user_id):
     if not ok:
         return jsonify({'error': 'Kullanıcı bulunamadı'}), 404
     return jsonify({'result': True})
+
+from app.services.user_service import UserService
+
+# Blueprint'i app/__init__.py dosyasında /api/v1/auth prefix'i ile kaydettik.
+user_bp = Blueprint('user_bp', __name__)
+
+@user_bp.route('/register', methods=['POST'])
+def register():
+    """Yeni kullanıcı (user veya student) kaydı."""
+    data = request.get_json()
+    username = data.get('username')
+    email = data.get('email')
+    password = data.get('password')
+    
+    if not all([username, email, password]):
+        return jsonify({"success": False, "message": "Kullanıcı adı, e-posta ve şifre gereklidir."}), 400
+        
+    # Varsayılan rol 'user' olarak atanır (config.py'de belirlendi)
+    result = UserService.register_user(username, email, password, role='user')
+
+    if result["success"]:
+        return jsonify({"success": True, "message": "Kullanıcı başarıyla kaydedildi. Şimdi giriş yapabilirsiniz."}), 201
+    else:
+        # Hata, genellikle e-posta adresi zaten kullanımda olduğundan kaynaklanır
+        return jsonify(result), 409 
+
+@user_bp.route('/login', methods=['POST'])
+def login():
+    """Kullanıcı girişi ve JWT token üretimi."""
+    data = request.get_json()
+    email = data.get('email')
+    password = data.get('password')
+    
+    if not all([email, password]):
+        return jsonify({"success": False, "message": "E-posta ve şifre gereklidir."}), 400
+        
+    result = UserService.authenticate_user(email, password)
+    
+    if result["success"]:
+        # Başarılı girişte JWT token, kullanıcı rolü ve diğer bilgileri döndür
+        return jsonify({
+            "success": True, 
+            "message": result["message"],
+            "user_id": result["user_id"],
+            "role": result["role"],
+            "access_token": result["token"] 
+        }), 200
+    else:
+        # Geçersiz kimlik bilgisi
+        return jsonify(result), 401
+
