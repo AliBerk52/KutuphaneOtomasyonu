@@ -223,3 +223,19 @@ UNLOCK TABLES;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2025-12-27 12:14:06
+
+CREATE DEFINER=`root`@`localhost` TRIGGER `after_loan_return_calculate_penalty` AFTER UPDATE ON `loan` FOR EACH ROW BEGIN
+     -- Sadece return_date yeni eklendiğinde ve due_date'i geçtiğinde çalış
+     IF NEW.return_date IS NOT NULL AND OLD.return_date IS NULL AND NEW.return_date > NEW.due_date THEN
+         INSERT INTO penalty (loan_id, amount, penalty_date, is_paid)
+         VALUES (
+             NEW.id, 
+             DATEDIFF(NEW.return_date, NEW.due_date) * 50, -- Gün farkı * 50 TL
+             NOW(), 
+             0 -- Ödenmedi olarak başlar
+         );
+     END IF;
+ END
+
+
+
