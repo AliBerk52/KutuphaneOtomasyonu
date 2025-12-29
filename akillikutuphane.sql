@@ -238,4 +238,34 @@ CREATE DEFINER=`root`@`localhost` TRIGGER `after_loan_return_calculate_penalty` 
  END
 
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `CalculatePenalty`(IN loan_id_param INT)
+ BEGIN
+     DECLARE v_due_date DATETIME;
+     DECLARE v_return_date DATETIME;
+     DECLARE v_days_late INT;
+     DECLARE v_penalty_amount DECIMAL(10, 2);
+     
+     -- Kütüphane İş Kuralı: Günlük Ceza Miktarı (0.50 TL)
+     DECLARE DAILY_PENALTY DECIMAL(10, 2) DEFAULT 0.50; 
+ 
+     -- İlgili ödünç kaydının tarihlerini çek
+     SELECT due_date, return_date INTO v_due_date, v_return_date
+     FROM loan
+     WHERE id = loan_id_param;
+ 
+     -- Eğer iade tarihi belirlenmiş ve vadesi geçmişse ceza hesapla
+     IF v_return_date IS NOT NULL AND v_return_date > v_due_date THEN
+         -- Gecikme gün sayısını hesapla
+         SET v_days_late = DATEDIFF(DATE(v_return_date), DATE(v_due_date));
+         
+         -- Ceza miktarını hesapla
+         SET v_penalty_amount = v_days_late * DAILY_PENALTY;
+ 
+         -- Penalty Tablosuna Cezayı Ekle/Güncelle (ON DUPLICATE KEY UPDATE: Eğer ceza daha önce eklenmişse miktarı günceller)
+         INSERT INTO penalty (loan_id, amount, is_paid)
+         VALUES (loan_id_param, v_penalty_amount, FALSE)
+         ON DUPLICATE KEY UPDATE amount = v_penalty_amount; 
+     END IF;
+ END
+
 
